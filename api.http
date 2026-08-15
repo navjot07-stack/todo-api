@@ -1,0 +1,56 @@
+### CREATE - Create a new task
+POST http://localhost:5000/api/tasks
+Content-Type: application/json
+
+{
+  "title": "Finish REST API Assignment",
+  "description": "Complete the backend project",
+  "dueDate": "2026-08-20"
+}
+
+###
+
+### READ ALL - Get all tasks
+GET http://localhost:5000/api/tasks
+
+###
+
+### READ ALL - Get completed tasks only
+GET http://localhost:5000/api/tasks?completed=true
+
+###
+
+### READ ONE - Get a task by ID
+GET http://localhost:5000/api/tasks/6a7fcba121239ab47dfa0ee4
+
+###
+
+### UPDATE - Update a task
+PUT http://localhost:5000/api/tasks/6a7fcba121239ab47dfa0ee4
+Content-Type: application/json
+
+{
+  "title": "REST API Assignment Completed",
+  "description": "Updated through PUT request",
+  "isCompleted": true
+}
+
+###
+
+### DELETE - Delete a task
+DELETE http://localhost:5000/api/tasks/6a7fce3921239ab47dfa0ee6
+
+###
+
+### ERROR TEST - Task not found
+GET http://localhost:5000/api/tasks/000000000000000000000000
+
+###
+
+### VALIDATION TEST - Missing title
+POST http://localhost:5000/api/tasks
+Content-Type: application/json
+
+{
+  "description": "This task has no title"
+}
