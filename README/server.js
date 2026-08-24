@@ -1,18 +1,15 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const cors = require("cors");
 
 dotenv.config();
 
 const taskRoutes = require("./routes/taskRoutes");
-const authRoutes = require("./routes/authRoutes");
 const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
 
 // Middleware
-app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
@@ -22,7 +19,6 @@ mongoose
   .catch((err) => console.log(err));
 
 // Routes
-app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 
 // Global Error Handler

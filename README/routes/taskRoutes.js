@@ -1,16 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const Task = require("../models/Task");
-const protect = require("../middleware/authMiddleware");
 
 // CREATE
-router.post("/", protect, async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
-    const task = await Task.create({
-      ...req.body,
-      owner: req.user.id,
-    });
-
+    const task = await Task.create(req.body);
     res.status(201).json(task);
   } catch (err) {
     err.status = 400;
@@ -19,11 +14,9 @@ router.post("/", protect, async (req, res, next) => {
 });
 
 // READ ALL
-router.get("/", protect, async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
-    const filter = {
-      owner: req.user.id,
-    };
+    const filter = {};
 
     if (req.query.completed) {
       filter.isCompleted = req.query.completed === "true";
@@ -38,12 +31,9 @@ router.get("/", protect, async (req, res, next) => {
 });
 
 // READ ONE
-router.get("/:id", protect, async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
-    const task = await Task.findOne({
-      _id: req.params.id,
-      owner: req.user.id,
-    });
+    const task = await Task.findById(req.params.id);
 
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
@@ -56,19 +46,12 @@ router.get("/:id", protect, async (req, res, next) => {
 });
 
 // UPDATE
-router.put("/:id", protect, async (req, res, next) => {
+router.put("/:id", async (req, res, next) => {
   try {
-    const task = await Task.findOneAndUpdate(
-      {
-        _id: req.params.id,
-        owner: req.user.id,
-      },
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
@@ -81,20 +64,15 @@ router.put("/:id", protect, async (req, res, next) => {
 });
 
 // DELETE
-router.delete("/:id", protect, async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
   try {
-    const task = await Task.findOneAndDelete({
-      _id: req.params.id,
-      owner: req.user.id,
-    });
+    const task = await Task.findByIdAndDelete(req.params.id);
 
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
     }
 
-    res.status(200).json({
-      message: "Task deleted successfully",
-    });
+    res.status(200).json({ message: "Task deleted successfully" });
   } catch (err) {
     next(err);
   }
